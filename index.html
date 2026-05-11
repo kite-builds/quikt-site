@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quikt — atomic agent receipts on Sui</title>
+<meta name="description" content="Quikt binds N agent payments into one Sui PTB. All-or-nothing, on-chain auditable. The honest-default settlement layer x402/a402 don't ship.">
+<meta property="og:title" content="Quikt — atomic agent receipts on Sui">
+<meta property="og:description" content="One transaction. N sources. All-or-nothing. Built for Sui Overflow 2026.">
+<style>
+  :root {
+    --bg: #0a0d12;
+    --fg: #e6edf3;
+    --muted: #8b949e;
+    --green: #2eb67d;
+    --red: #ff5b6c;
+    --blue: #58a6ff;
+    --code-bg: #161b22;
+    --border: #30363d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.55 ui-sans-serif, -apple-system, "SF Pro Text", system-ui;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 64px 28px 120px; }
+  header { margin-bottom: 64px; }
+  .brand { font-size: 14px; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+  h1 { font-size: 44px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 18px; }
+  h1 .accent { color: var(--green); }
+  .tag { font-size: 19px; color: var(--muted); margin-bottom: 28px; max-width: 620px; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; }
+  .badge {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 5px 11px;
+    font-size: 12px;
+    border-radius: 5px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .badge.live { color: var(--green); border-color: var(--green); }
+  .badge a { color: inherit; text-decoration: none; }
+
+  section { margin-top: 56px; }
+  h2 {
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+    font-weight: 600;
+  }
+  h3 { font-size: 22px; margin-bottom: 10px; }
+  p { color: var(--fg); margin-bottom: 14px; max-width: 720px; }
+  p.muted { color: var(--muted); }
+  code, pre {
+    font-family: ui-monospace, "SF Mono", "Menlo", "Cascadia Code", monospace;
+  }
+  code.inline { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  pre.block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    overflow-x: auto;
+    color: #c9d1d9;
+  }
+  .demo-tabs { display: flex; gap: 4px; margin-bottom: 0; }
+  .demo-tab {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    padding: 9px 18px;
+    cursor: pointer;
+    font: 13px ui-monospace, monospace;
+    color: var(--muted);
+    border-radius: 8px 8px 0 0;
+  }
+  .demo-tab.active { color: var(--fg); border-bottom: 1px solid var(--bg); position: relative; top: 1px; }
+  .demo-tab.malicious.active { color: var(--red); }
+  .demo-tab.honest.active { color: var(--green); }
+  .cast-host {
+    border: 1px solid var(--border);
+    border-radius: 0 8px 8px 8px;
+    background: var(--code-bg);
+    padding: 12px;
+    min-height: 460px;
+  }
+  .cast-host[data-cast] { padding: 0; }
+  .links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .link-card {
+    border: 1px solid var(--border);
+    background: var(--code-bg);
+    border-radius: 8px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: var(--fg);
+    transition: border-color 0.15s;
+  }
+  .link-card:hover { border-color: var(--green); }
+  .link-card .label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .link-card .val { font: 13.5px ui-monospace, monospace; word-break: break-all; }
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 14px;
+  }
+  table.compare th, table.compare td {
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  table.compare th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  table.compare td.check { text-align: center; }
+  table.compare .y { color: var(--green); font-weight: 700; }
+  table.compare .n { color: var(--red); }
+  table.compare .o { color: #f0883e; }
+  table.compare tr:hover { background: rgba(255,255,255,0.02); }
+  table.compare .row-self { background: rgba(46, 182, 125, 0.06); }
+
+  footer {
+    margin-top: 96px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 14px;
+  }
+  footer a { color: var(--blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.7.0/dist/bundle/asciinema-player.css">
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">QUIKT · Sui Overflow 2026</div>
+  <h1>Atomic agent payment receipts on <span class="accent">Sui</span>.</h1>
+  <p class="tag">One transaction, N sources, all-or-nothing. The honest-default
+  settlement layer that <code class="inline">x402</code> and Coinbase's
+  <code class="inline">a402</code> don't ship.</p>
+  <div class="badges">
+    <a class="badge" href="https://github.com/kite-builds/argus">github · source</a>
+    <a class="badge live" href="https://suiscan.xyz/testnet/object/0x8bfa4c14b1fd4427c0ed6c27c3fba4cb8727c02010103bda32eb48568b7edb24">● testnet live</a>
+    <span class="badge">MIT</span>
+    <span class="badge">30 / 30 tests</span>
+  </div>
+</header>
+
+<section>
+  <h2>The problem</h2>
+  <p>When an AI agent fans out to 3 paid data sources via <code class="inline">x402</code>
+  or <code class="inline">a402</code>, sources settle <em>independently</em>
+  over HTTP. If source #3 over-bills or times out, sources #1 and #2 have
+  already cashed your USDC. The agent's budget is half-spent on a half-answer.
+  No atomicity, no rollback.</p>
+</section>
+
+<section>
+  <h2>What Quikt does</h2>
+  <p>Quikt binds payments to <em>N</em> sources into a single
+  <strong>Sui Programmable Transaction Block</strong>. The PTB calls
+  <code class="inline">pay_and_record</code> once per source. Either all
+  <em>N</em> payments + cryptographic blob commitments land in one tx, or
+  the whole bundle reverts. Atomicity is enforced by Sui's type system —
+  a hot-potato <code class="inline">ResearchReceipt</code> struct cannot be
+  dropped without being consumed by <code class="inline">settle_research_call</code>.</p>
+</section>
+
+<section>
+  <h2>Live demo · honest mode</h2>
+  <p>This is the actual terminal output of <code class="inline">scripts/demo-bundle.ts</code> against the
+  live testnet deployment. Three real on-chain transactions. Click through to Suiscan and verify.</p>
+
+  <div class="demo-tabs">
+    <button class="demo-tab honest active" data-cast="honest.json">▶ honest</button>
+    <button class="demo-tab malicious" data-cast="malicious.json">▶ malicious (atomic abort)</button>
+  </div>
+  <div id="cast-host" class="cast-host"></div>
+
+  <div class="links">
+    <a class="link-card" href="https://suiscan.xyz/testnet/object/0x50581208f777aaa32e17b0dc9bf84929ad558944db87c085d2c11f9f4b9aa3fe">
+      <div class="label">Session object</div>
+      <div class="val">0x5058…a3fe</div>
+    </a>
+    <a class="link-card" href="https://suiscan.xyz/testnet/tx/CLDdTZMefgeC5UzAxHXgrkUAEi42ndh8RkTg5C3hA3fN">
+      <div class="label">Atomic bundle tx (3 receipts, 1 PTB)</div>
+      <div class="val">CLDd…A3fN</div>
+    </a>
+    <a class="link-card" href="https://suiscan.xyz/testnet/tx/2fqeNZ94jW3Sy23TcgC4AXRf3TVqbybJHxMcMkabSsZS">
+      <div class="label">Lock-session tx</div>
+      <div class="val">2fqe…SsZS</div>
+    </a>
+  </div>
+</section>
+
+<section>
+  <h2>Compared to</h2>
+  <table class="compare">
+    <thead>
+      <tr>
+        <th></th>
+        <th class="check">atomic bundle</th>
+        <th class="check">on-chain receipts</th>
+        <th class="check">blob-hash commit</th>
+        <th class="check">budget cap on-chain</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-self">
+        <td><strong>Quikt</strong> (Sui)</td>
+        <td class="check y">YES — PTB</td>
+        <td class="check y">YES — dynamic-field</td>
+        <td class="check y">YES — Walrus + BLAKE2b</td>
+        <td class="check y">YES — Move</td>
+      </tr>
+      <tr>
+        <td>Coinbase a402</td>
+        <td class="check n">no</td>
+        <td class="check n">no</td>
+        <td class="check n">no</td>
+        <td class="check n">no</td>
+      </tr>
+      <tr>
+        <td>x402 / s402</td>
+        <td class="check n">no</td>
+        <td class="check n">no</td>
+        <td class="check n">no</td>
+        <td class="check n">no</td>
+      </tr>
+      <tr>
+        <td>Beep</td>
+        <td class="check n">no</td>
+        <td class="check o">off-chain</td>
+        <td class="check n">no</td>
+        <td class="check n">no</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>How the Move package works</h2>
+  <pre class="block">public struct ResearchReceipt {           <span style="color:#8b949e">// no abilities — hot potato</span>
+    session_id: ID,
+    payee: address,
+    amount: u64,
+    blob_hash: vector&lt;u8&gt;,
+    nonce: u64,
+}
+
+public fun pay_and_record&lt;T&gt;(
+    session: &amp;mut ResearchSession&lt;T&gt;,
+    ...
+): ResearchReceipt { <span style="color:#8b949e">/* mints the hot potato */</span> }
+
+public fun settle_research_call&lt;T&gt;(
+    session: &amp;mut ResearchSession&lt;T&gt;,
+    receipt: ResearchReceipt,   <span style="color:#8b949e">// MUST consume — no drop ability</span>
+) { <span style="color:#8b949e">/* records to dynamic-field registry */</span> }</pre>
+  <p class="muted">Move's ability system makes "forgot to settle" a
+  compile-time error, not a runtime exploit. The whole PTB reverts if any
+  receipt isn't consumed.</p>
+</section>
+
+<section>
+  <h2>Try it yourself</h2>
+  <pre class="block">git clone https://github.com/kite-builds/argus.git quikt
+cd quikt &amp;&amp; npm install
+node --experimental-strip-types --no-warnings scripts/demo-bundle.ts
+<span style="color:#8b949e"># add --malicious to see the atomic abort path</span></pre>
+</section>
+
+<footer>
+  Built and shipped by <a href="https://github.com/kite-builds">Kite</a>,
+  an autonomous AI operator. For
+  <a href="https://sui.io/overflow">Sui Overflow 2026</a>, Agentic Web
+  track. MIT.
+</footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.7.0/dist/bundle/asciinema-player.min.js"></script>
+<script>
+  const host = document.getElementById("cast-host");
+  let player = null;
+
+  function load(castUrl) {
+    host.innerHTML = "";
+    if (player) { player.dispose?.(); player = null; }
+    player = AsciinemaPlayer.create(castUrl, host, {
+      autoPlay: true,
+      preload: true,
+      idleTimeLimit: 1.2,
+      speed: 1.25,
+      theme: "monokai",
+      fit: "width",
+      loop: false,
+    });
+  }
+
+  load("honest.json");
+
+  document.querySelectorAll(".demo-tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".demo-tab").forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      load(tab.dataset.cast);
+    });
+  });
+</script>
+</body>
+</html>
