@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Macro falsifier watch — Quikt</title>
+<meta name="description" content="Live tracker for Raoul Pal's stated falsifiers of the AI-capex / weak-dollar thesis: DXY and US 10Y yield vs their recent 4-month highs.">
+<style>
+  :root { --bg:#0a0d12; --fg:#e6edf3; --muted:#8b949e; --green:#2eb67d; --red:#ff5b6c; --yellow:#f0883e; --blue:#58a6ff; --code-bg:#161b22; --border:#30363d; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--fg); font:16px/1.55 ui-sans-serif,-apple-system,system-ui; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:880px; margin:0 auto; padding:64px 28px 120px; }
+  header { margin-bottom:32px; }
+  .brand { font-size:14px; letter-spacing:0.18em; color:var(--muted); text-transform:uppercase; margin-bottom:12px; }
+  .brand a { color:var(--muted); text-decoration:none; }
+  h1 { font-size:38px; line-height:1.1; font-weight:700; letter-spacing:-0.02em; margin-bottom:14px; }
+  .tag { font-size:18px; color:var(--muted); margin-bottom:28px; max-width:680px; }
+  .verdict { display:inline-block; padding:8px 14px; border-radius:8px; font-weight:700; font-size:14px; letter-spacing:0.06em; text-transform:uppercase; }
+  .verdict.green { background:rgba(46,182,125,0.12); color:var(--green); border:1px solid var(--green); }
+  .verdict.yellow { background:rgba(240,136,62,0.12); color:var(--yellow); border:1px solid var(--yellow); }
+  .verdict.red { background:rgba(255,91,108,0.12); color:var(--red); border:1px solid var(--red); }
+  .countdown { color:var(--muted); margin-left:14px; font-size:14px; }
+  section { margin-top:48px; }
+  h2 { font-size:13px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-bottom:18px; font-weight:600; }
+  p { color:var(--fg); margin-bottom:14px; max-width:720px; }
+  p.muted { color:var(--muted); }
+  code { font-family:ui-monospace,"SF Mono","Menlo",monospace; background:var(--code-bg); padding:2px 6px; border-radius:4px; font-size:0.9em; }
+  .instruments { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:18px; margin-top:22px; }
+  .inst { border:1px solid var(--border); background:var(--code-bg); border-radius:10px; padding:22px; }
+  .inst-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .inst-name { font-weight:700; font-size:15px; }
+  .inst-dot { width:12px; height:12px; border-radius:50%; }
+  .inst-dot.green { background:var(--green); }
+  .inst-dot.yellow { background:var(--yellow); box-shadow:0 0 8px var(--yellow); }
+  .inst-dot.red { background:var(--red); box-shadow:0 0 8px var(--red); }
+  .inst-row { display:flex; justify-content:space-between; margin:6px 0; font-family:ui-monospace,"SF Mono",monospace; font-size:14px; }
+  .inst-row .k { color:var(--muted); }
+  .inst-row .v { color:var(--fg); font-weight:600; }
+  .inst-row .v.above { color:var(--yellow); }
+  .inst-row .v.way-above { color:var(--red); }
+  .weekly { margin-top:14px; padding-top:14px; border-top:1px solid var(--border); }
+  .weekly-row { display:flex; justify-content:space-between; font-family:ui-monospace,monospace; font-size:12px; color:var(--muted); padding:2px 0; }
+  .weekly-row .close.above { color:var(--yellow); }
+  footer { margin-top:88px; padding-top:32px; border-top:1px solid var(--border); color:var(--muted); font-size:14px; }
+  footer a { color:var(--blue); text-decoration:none; }
+  .ts { font-size:12px; color:var(--muted); margin-top:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand"><a href="/">QUIKT</a> · MACRO FALSIFIER WATCH</div>
+  <h1 id="title">Loading…</h1>
+  <p class="tag">Live tracker for the two falsifiers Raoul Pal stated for his
+  AI-capex / weak-dollar framework — both must hold below their recent
+  4-month highs through Labor Day for the thesis to keep working.</p>
+  <div id="verdict-box"></div>
+</header>
+
+<section>
+  <h2>Falsifiers</h2>
+  <p class="muted">Pal's exact wording (2026-05-13): "DXY closing above its
+  recent four-month high for three consecutive weekly closes before Labor
+  Day. 10Y yield closing above its recent four-month high for three
+  consecutive weekly closes before Labor Day. If either breaks through
+  and stays through, the framework was wrong."</p>
+  <div class="instruments" id="instruments">
+    <div class="inst"><span class="muted">loading…</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>What this is</h2>
+  <p>The Pal framework says US macro is now organising itself around
+  preserving the AI-capex supercycle: a deliberate weak-dollar regime
+  brings foreign duration buyers back to the long end, lets the federal
+  rollover keep clearing, and burns the debt-to-GDP ratio down without the
+  Fed having to cut into an inflation flare. Stablecoin legislation turns
+  USDC/USDT into structural buyers of short Treasuries, which is the
+  policy reason agent-payment rails like Quikt have a structural — not
+  speculative — tailwind.</p>
+  <p>The two prices on this page are the only way Pal said the framework
+  could be wrong, by his own stated rules. Both must close above their
+  recent 4-month highs three weeks in a row before
+  <strong>2026-09-07</strong> (Labor Day) for the thesis to be falsified.</p>
+</section>
+
+<section>
+  <h2>Source</h2>
+  <p class="muted">Daily closes pulled from Yahoo Finance
+  (<code>DX-Y.NYB</code> for DXY, <code>^TNX</code> for US 10Y).
+  The 4-month-high is computed as a rolling max over the last ~84 trading
+  days. Weekly-close detection takes the last daily close of each ISO
+  week. The watcher cron refreshes once per UTC day.</p>
+  <p class="muted">This page is a public tracker, not financial advice or
+  trading guidance. Build for an AI-capex era; don't bet your wallet on
+  one tweet.</p>
+</section>
+
+<footer>
+  Source: <a href="https://github.com/kite-builds/quikt-site">github.com/kite-builds/quikt-site</a>
+  · Refresh: <code>python3 tools/macro_falsifier_update.py</code>
+  · Quikt: <a href="/">/</a>
+</footer>
+
+</div>
+
+<script>
+async function load() {
+  const url = '../macro.json?t=' + Date.now();
+  let data;
+  try {
+    const r = await fetch(url, { cache: 'no-store' });
+    data = await r.json();
+  } catch (e) {
+    document.getElementById('title').textContent = 'Could not load macro.json';
+    return;
+  }
+
+  const verdict = data.overall_status === 'FALSIFIED' ? 'FALSIFIED'
+                : data.overall_status === 'watch' ? 'WATCH'
+                : 'INTACT';
+  const color = data.overall_color;
+  document.getElementById('title').textContent =
+    verdict === 'FALSIFIED' ? 'Thesis falsified.'
+    : verdict === 'WATCH' ? 'Thesis intact — one signal flickering.'
+    : 'Thesis intact.';
+
+  const days = data.days_until_deadline;
+  const dl = data.deadline;
+  document.getElementById('verdict-box').innerHTML =
+    `<span class="verdict ${color}">${verdict}</span>` +
+    `<span class="countdown">${days} days until Labor Day (${dl})</span>`;
+
+  const inst = document.getElementById('instruments');
+  inst.innerHTML = '';
+  for (const [key, p] of Object.entries(data.instruments)) {
+    if (p.error) {
+      inst.innerHTML += `<div class="inst"><div class="inst-name">${p.display_name}</div><div class="muted">error: ${p.error}</div></div>`;
+      continue;
+    }
+    const latestFmt = (p.format || '{:.2f}').replace('{:.', '').replace('}', '');
+    const decimals = parseInt(latestFmt.replace('f', ''), 10) || 2;
+    const fmt = (x) => x.toFixed(decimals) + (p.unit || '');
+    const aboveCls = p.latest >= p.four_month_high ? (p.consecutive_weekly_closes_above_threshold >= 3 ? 'way-above' : 'above') : '';
+    const weeks = p.weekly_closes_last_12.map(w => {
+      const ab = w.close >= p.four_month_high ? 'above' : '';
+      return `<div class="weekly-row"><span>${w.date}</span><span class="close ${ab}">${fmt(w.close)}</span></div>`;
+    }).join('');
+    inst.innerHTML += `
+      <div class="inst">
+        <div class="inst-header">
+          <div class="inst-name">${p.display_name}</div>
+          <div class="inst-dot ${p.color}" title="${p.status}"></div>
+        </div>
+        <div class="inst-row"><span class="k">Latest</span><span class="v ${aboveCls}">${fmt(p.latest)}</span></div>
+        <div class="inst-row"><span class="k">4-month high</span><span class="v">${fmt(p.four_month_high)}</span></div>
+        <div class="inst-row"><span class="k">Consecutive weekly closes above</span><span class="v">${p.consecutive_weekly_closes_above_threshold} / 3</span></div>
+        <div class="inst-row"><span class="k">Status</span><span class="v">${p.status}</span></div>
+        <div class="weekly">
+          <div class="muted" style="font-size:11px;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">Last 12 weekly closes</div>
+          ${weeks}
+        </div>
+      </div>
+    `;
+  }
+
+  const ts = new Date(data.generated_at);
+  document.body.insertAdjacentHTML('beforeend',
+    `<div class="wrap" style="padding-top:0;"><div class="ts">Data refreshed ${ts.toISOString()} · schema ${data.schema}</div></div>`);
+}
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+{
+  "schema": "kite.macro-falsifier.v1",
+  "generated_at": "2026-05-13T14:20:33.884865+00:00",
+  "deadline": "2026-09-07",
+  "days_until_deadline": 117,
+  "thesis_source": "Raoul Pal \u2014 Universal Code / AI capex supercycle framework (2026-05-13)",
+  "instruments": {
+    "DXY": {
+      "symbol": "DXY",
+      "latest": 98.492,
+      "four_month_high": 100.51,
+      "consecutive_weekly_closes_above_threshold": 0,
+      "weeks_above_threshold_last_12": 0,
+      "status": "intact",
+      "color": "green",
+      "weekly_closes_last_12": [
+        {
+          "date": "2026-02-27",
+          "close": 97.61
+        },
+        {
+          "date": "2026-03-06",
+          "close": 98.99
+        },
+        {
+          "date": "2026-03-13",
+          "close": 100.36
+        },
+        {
+          "date": "2026-03-20",
+          "close": 99.65
+        },
+        {
+          "date": "2026-03-27",
+          "close": 100.15
+        },
+        {
+          "date": "2026-04-02",
+          "close": 100.03
+        },
+        {
+          "date": "2026-04-10",
+          "close": 98.65
+        },
+        {
+          "date": "2026-04-17",
+          "close": 98.1
+        },
+        {
+          "date": "2026-04-24",
+          "close": 98.51
+        },
+        {
+          "date": "2026-05-01",
+          "close": 98.21
+        },
+        {
+          "date": "2026-05-08",
+          "close": 97.84
+        },
+        {
+          "date": "2026-05-13",
+          "close": 98.492
+        }
+      ],
+      "display_name": "US Dollar Index (DXY)",
+      "unit": "",
+      "format": "{:.2f}"
+    },
+    "TNX": {
+      "symbol": "TNX",
+      "latest": 4.473,
+      "four_month_high": 4.473,
+      "consecutive_weekly_closes_above_threshold": 1,
+      "weeks_above_threshold_last_12": 1,
+      "status": "watch",
+      "color": "yellow",
+      "weekly_closes_last_12": [
+        {
+          "date": "2026-02-27",
+          "close": 3.962
+        },
+        {
+          "date": "2026-03-06",
+          "close": 4.133
+        },
+        {
+          "date": "2026-03-13",
+          "close": 4.285
+        },
+        {
+          "date": "2026-03-20",
+          "close": 4.391
+        },
+        {
+          "date": "2026-03-27",
+          "close": 4.44
+        },
+        {
+          "date": "2026-04-02",
+          "close": 4.313
+        },
+        {
+          "date": "2026-04-10",
+          "close": 4.317
+        },
+        {
+          "date": "2026-04-17",
+          "close": 4.246
+        },
+        {
+          "date": "2026-04-24",
+          "close": 4.31
+        },
+        {
+          "date": "2026-05-01",
+          "close": 4.378
+        },
+        {
+          "date": "2026-05-08",
+          "close": 4.364
+        },
+        {
+          "date": "2026-05-13",
+          "close": 4.473
+        }
+      ],
+      "display_name": "US 10Y Treasury yield",
+      "unit": "%",
+      "format": "{:.3f}"
+    }
+  },
+  "overall_status": "watch",
+  "overall_color": "yellow"
+}
