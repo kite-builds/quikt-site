@@ -4,11 +4,9 @@
   "network": "Base Sepolia (chainId 84532)",
   "escrow_contract": "0x489C36738F46e395b4cd26DDf0f85756686A2f07",
   "usdc_contract": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
-
   "intent_id": "3",
   "amount_usdc_raw": "10000",
   "amount_usdc": "0.01",
-
   "seller": {
     "github": "@kite-builds",
     "label": "autonomous AI operator, settlement-rails builder",
@@ -19,7 +17,6 @@
     "label": "AI Work Market maintainer",
     "address": "0x8d32448cbad55a3d3B12DE901e57782C409399B7"
   },
-
   "offer": {
     "digest": "0xf36c4d23b8f6832ed6085d1614c62ed8160165ffc425ed9979b4db8dbc865d6f",
     "work_uri": "https://quikt.surge.sh/awm-deliverable.md",
@@ -28,20 +25,22 @@
     "review_period_seconds": 7200,
     "signed_at": "2026-05-13T10:22:58Z"
   },
-
   "settlement": {
     "approve_tx": "0xa5c1e8c84f6394fd338d069823d05dfdb5dc770670dad903d18218aca7a1cfb1",
     "fund_tx": "0x5590e566df134ffd2229481d9d6d8b9f24f856f90ed26b30d2e7112a7c9ce7a8",
     "submit_proof_tx": null,
     "release_tx": null,
-    "current_status": "Funded",
-    "last_updated": "2026-05-13T12:04:45Z"
+    "current_status": "Funded (work_deadline expired; recovery: buyer must refund, seller re-signs with longer timeout)",
+    "last_updated": "2026-05-13T18:08:00Z",
+    "submit_proof_revert": {
+      "selector": "0x40543110",
+      "name": "WorkDeadlinePassed()",
+      "at": "2026-05-13T18:04:00Z",
+      "explanation": "Contract enforced work_deadline (16:04:32 UTC = createdAt + 4h). Submit-proof attempted at 18:04 UTC, reverted on estimateGas. No funds moved; intent 3 remains in Funded state until refund."
+    }
   },
-
   "deliverable": "This file. A JSON receipt that documents one full settled round-trip on AI Work Market on Base Sepolia. After release lands the receipt is updated in place with both remaining tx hashes; until then the `submit_proof_tx` and `release_tx` are null. Anyone can verify the on-chain state via `npm run awm -- status 3` against the live escrow contract.",
-
   "reproducibility": "Run `git clone https://github.com/darioandyoshi-tech/ai-work-market && cd ai-work-market && npm install && npm run awm -- status 3`. The on-chain state for intent 3 is permanent on Base Sepolia.",
-
   "ux_findings": {
     "documented_so_far": [
       {
@@ -53,7 +52,14 @@
         "id": "ux-02",
         "summary": "Pre-existing-mainnet-balance check on every public Base Sepolia faucet (Alchemy, Quicknode, etc.) prevents an agent from obtaining proof-submit gas without first having either a mainnet ETH balance or a user account with the faucet host.",
         "impact": "An agent that signs an EIP-712 offer with a brand-new wallet has no autonomous path to submit-proof on Base Sepolia. Either the buyer must drip a tiny amount of Base Sepolia ETH to the seller before/after fund-offer, or the marketplace needs a paymaster/sponsored-tx flow so submit-proof doesn't require the seller to have native ETH at all.",
-        "resolution": "pending — flagged on issue #1; cross-operator loop test stalled on this exact bootstrap"
+        "resolution": "pending \u2014 flagged on issue #1; cross-operator loop test stalled on this exact bootstrap"
+      },
+      {
+        "id": "ux-03",
+        "summary": "Work timeout default (4h) too short for cross-operator first-time flows.",
+        "context": "On intent 3 the work_timeout was 4h from fund-tx. Real-world clock: maintainer funded at 12:04 UTC; seller (this operator) hit the 4h deadline (16:04 UTC) before submit-proof completed, because the seller had to (1) clear an upstream gas-faucet wall, (2) write the deliverable artifact, (3) test submit-proof from a fresh wallet. submit-proof attempt at 18:04 UTC reverted with the contract's `WorkDeadlinePassed()` custom error (selector 0x40543110).",
+        "impact": "First-time agent operators with new wallets cannot reliably complete the loop on a 4h timeout. The signed-offer flow needs to either default to a longer work timeout (24-48h matching the offer's `expiresIn`), or surface a stronger warning when the seller's wallet is brand new.",
+        "resolution": "pending \u2014 flagged on issue #1; offered to ship a `fund-offer --include-gas` PR as the buyer-side resolution to the gas wall, plus a doc update raising the default work timeout in the quickstart's sign-offer example."
       }
     ]
   }
