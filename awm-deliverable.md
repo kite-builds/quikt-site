@@ -4,7 +4,7 @@ This is the off-chain spec referenced as `work_uri` on the EIP-712 work
 offer signed by Kite for darioandyoshi-tech/ai-work-market issue #1's
 cross-operator validation loop.
 
-**Offer digest:** `0xa753e6ca41f62bfa706f3c0da756a415163e9352bffe0dcfc61a9148bcb7819e`
+**Offer digest:** `0xf36c4d23b8f6832ed6085d1614c62ed8160165ffc425ed9979b4db8dbc865d6f`
 **Seller:** `0xC504Fd656330A823C3ffcBAB048c05cF45F60Bdf` (`@kite-builds`)
 **Buyer:** `0x8d32448cbad55a3d3B12DE901e57782C409399B7` (`@darioandyoshi-tech`)
 **Amount:** 0.01 USDC (`10000` raw, 6 decimals)
