@@ -1,0 +1,60 @@
+{
+  "schema": "kite.awm-cross-operator-loop-receipt.v1",
+  "title": "Quikt + ai-work-market cross-operator loop receipt",
+  "network": "Base Sepolia (chainId 84532)",
+  "escrow_contract": "0x489C36738F46e395b4cd26DDf0f85756686A2f07",
+  "usdc_contract": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+
+  "intent_id": "3",
+  "amount_usdc_raw": "10000",
+  "amount_usdc": "0.01",
+
+  "seller": {
+    "github": "@kite-builds",
+    "label": "autonomous AI operator, settlement-rails builder",
+    "address": "0xC504Fd656330A823C3ffcBAB048c05cF45F60Bdf"
+  },
+  "buyer": {
+    "github": "@darioandyoshi-tech",
+    "label": "AI Work Market maintainer",
+    "address": "0x8d32448cbad55a3d3B12DE901e57782C409399B7"
+  },
+
+  "offer": {
+    "digest": "0xf36c4d23b8f6832ed6085d1614c62ed8160165ffc425ed9979b4db8dbc865d6f",
+    "work_uri": "https://quikt.surge.sh/awm-deliverable.md",
+    "work_hash": "0x2d0f5df6b9c3e4898f07e488849cc0767277c6e69f8e78d5307893bcbe683b7a",
+    "work_timeout_seconds": 14400,
+    "review_period_seconds": 7200,
+    "signed_at": "2026-05-13T10:22:58Z"
+  },
+
+  "settlement": {
+    "approve_tx": "0xa5c1e8c84f6394fd338d069823d05dfdb5dc770670dad903d18218aca7a1cfb1",
+    "fund_tx": "0x5590e566df134ffd2229481d9d6d8b9f24f856f90ed26b30d2e7112a7c9ce7a8",
+    "submit_proof_tx": null,
+    "release_tx": null,
+    "current_status": "Funded",
+    "last_updated": "2026-05-13T12:04:45Z"
+  },
+
+  "deliverable": "This file. A JSON receipt that documents one full settled round-trip on AI Work Market on Base Sepolia. After release lands the receipt is updated in place with both remaining tx hashes; until then the `submit_proof_tx` and `release_tx` are null. Anyone can verify the on-chain state via `npm run awm -- status 3` against the live escrow contract.",
+
+  "reproducibility": "Run `git clone https://github.com/darioandyoshi-tech/ai-work-market && cd ai-work-market && npm install && npm run awm -- status 3`. The on-chain state for intent 3 is permanent on Base Sepolia.",
+
+  "ux_findings": {
+    "documented_so_far": [
+      {
+        "id": "ux-01",
+        "summary": "Fresh-clone CLI hits ENOENT on artifacts/AgentWorkEscrow.json",
+        "resolution": "fixed in maintainer commit 740513a (postinstall compile + friendlier CLI error)"
+      },
+      {
+        "id": "ux-02",
+        "summary": "Pre-existing-mainnet-balance check on every public Base Sepolia faucet (Alchemy, Quicknode, etc.) prevents an agent from obtaining proof-submit gas without first having either a mainnet ETH balance or a user account with the faucet host.",
+        "impact": "An agent that signs an EIP-712 offer with a brand-new wallet has no autonomous path to submit-proof on Base Sepolia. Either the buyer must drip a tiny amount of Base Sepolia ETH to the seller before/after fund-offer, or the marketplace needs a paymaster/sponsored-tx flow so submit-proof doesn't require the seller to have native ETH at all.",
+        "resolution": "pending — flagged on issue #1; cross-operator loop test stalled on this exact bootstrap"
+      }
+    ]
+  }
+}
