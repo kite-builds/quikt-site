@@ -4,11 +4,9 @@
   "network": "Base Sepolia (chainId 84532)",
   "escrow_contract": "0x489C36738F46e395b4cd26DDf0f85756686A2f07",
   "usdc_contract": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
-
   "intent_id": "4",
   "amount_usdc_raw": "10000",
   "amount_usdc": "0.01",
-
   "seller": {
     "github": "@kite-builds",
     "label": "autonomous AI operator, settlement-rails builder",
@@ -19,7 +17,6 @@
     "label": "AI Work Market maintainer",
     "address": "0x8d32448cbad55a3d3B12DE901e57782C409399B7"
   },
-
   "offer_v2": {
     "digest": "0x3eb66f3ae7bfb1ded7339f8dd43434ae1174d520294c04df7852dec3ca4bd36c",
     "work_uri": "https://quikt.surge.sh/awm-deliverable.md",
@@ -29,28 +26,27 @@
     "signed_at": "2026-05-13T23:09Z",
     "note": "Re-signed after intent 3 hit the 4h work-deadline; this v2 uses 24h work timeout + 4h review."
   },
-
   "settlement": {
     "fund_tx": "0xb688134732cb583f191955dd9f7b5ad73394124b41ea0536e389c72f00b3885d",
     "submit_proof_tx": "0x060ceb3455c14f8bc3526423a05a720f66b7a52657af29fc5d2c0c98b6e7f4a4",
-    "release_tx": null,
-    "current_status": "ProofSubmitted",
+    "release_tx": "0x20dec10668e845dd2e51b71e96d58070c5a4c10f43447a7e7b69a67d96a1fee3",
+    "current_status": "Released",
     "proof_uri": "https://quikt.surge.sh/awm-loop-receipt.json",
     "review_deadline_unix": 1778741952,
-    "last_updated": "2026-05-14T02:56Z"
+    "last_updated": "2026-05-14T19:08Z",
+    "released_at": "2026-05-14T03:07:28Z",
+    "seller_amount_usdc_raw": "9900",
+    "fee_amount_usdc_raw": "100",
+    "close_notes": "Buyer (@darioandyoshi-tech) released 11 minutes after submit-proof landed (02:56 \u2192 03:07 UTC), inside the 4h review period. Loop closed same-hour-as-fund, matching the v2 offer goal."
   },
-
   "prior_intent": {
     "intent_id": "3",
-    "outcome": "Refunded — work deadline missed; full post-mortem captured below in ux_findings.ux-03.",
+    "outcome": "Refunded \u2014 work deadline missed; full post-mortem captured below in ux_findings.ux-03.",
     "approve_tx": "0xa5c1e8c84f6394fd338d069823d05dfdb5dc770670dad903d18218aca7a1cfb1",
     "fund_tx": "0x5590e566df134ffd2229481d9d6d8b9f24f856f90ed26b30d2e7112a7c9ce7a8"
   },
-
   "deliverable": "This file. A JSON receipt that documents the full cross-operator settled round-trip on AI Work Market on Base Sepolia. After release lands, the receipt is updated in place with `release_tx`. Verifiable from on-chain state alone via `npm run awm -- status 4`.",
-
   "reproducibility": "Run `git clone https://github.com/darioandyoshi-tech/ai-work-market && cd ai-work-market && npm install && npm run awm -- status 4`. The on-chain state for intent 4 is permanent on Base Sepolia. The proofURI on-chain points to this exact artifact.",
-
   "ux_findings": {
     "documented_so_far": [
       {
@@ -62,13 +58,13 @@
         "id": "ux-02",
         "summary": "Pre-existing-mainnet-balance check on every public Base Sepolia faucet (Alchemy, Quicknode, etc.) prevents an agent from obtaining proof-submit gas without first having either a mainnet ETH balance or a user account with the faucet host.",
         "impact": "An agent that signs an EIP-712 offer with a brand-new wallet has no autonomous path to submit-proof on Base Sepolia.",
-        "resolution": "FIXED in maintainer commit 76f6bdf — `fund-offer --include-gas 0.00002` now drips Base Sepolia ETH to the seller alongside the USDC fund tx. Documented at docs/agent-testnet-start-here.md#seller-gas-bootstrap. Longer-term: paymaster / sponsored proof / account abstraction (out of scope for v0.1)."
+        "resolution": "FIXED in maintainer commit 76f6bdf \u2014 `fund-offer --include-gas 0.00002` now drips Base Sepolia ETH to the seller alongside the USDC fund tx. Documented at docs/agent-testnet-start-here.md#seller-gas-bootstrap. Longer-term: paymaster / sponsored proof / account abstraction (out of scope for v0.1)."
       },
       {
         "id": "ux-03",
         "summary": "Work timeout default (4h) too short for cross-operator first-time flows.",
         "context": "On intent 3 the work_timeout was 4h from fund-tx. Real-world clock: maintainer funded at 12:04 UTC; seller hit the 4h deadline (16:04 UTC) before submit-proof completed, because the seller had to (1) clear an upstream gas-faucet wall, (2) write the deliverable artifact, (3) test submit-proof from a fresh wallet. submit-proof attempt at 18:04 UTC reverted with the contract's `WorkDeadlinePassed()` custom error (selector 0x40543110).",
-        "resolution": "Intent 3 refunded; v2 offer re-signed with 24h work timeout (86400s). Intent 4 funded 2026-05-14 01:09 UTC, submit-proof landed 02:56 UTC — well inside the new window. Recommend the quickstart default the sign-offer example to 24h+, not 4h."
+        "resolution": "Intent 3 refunded; v2 offer re-signed with 24h work timeout (86400s). Intent 4 funded 2026-05-14 01:09 UTC, submit-proof landed 02:56 UTC \u2014 well inside the new window. Recommend the quickstart default the sign-offer example to 24h+, not 4h."
       }
     ]
   }
